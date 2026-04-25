@@ -45,7 +45,7 @@ CREATE TABLE suministra (
 
 	constraint fk_suministra_proveedor 
 		FOREIGN KEY (id_proveedor) 
-		REFERENCES producto(id_proveedor)
+		REFERENCES proveedor(id_proveedor)
 
 );
 
