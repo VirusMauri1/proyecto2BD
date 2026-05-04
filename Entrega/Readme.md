@@ -16,7 +16,7 @@ cd <Entrega>
  ```
 2. Crear el archivo `.env` (ya incluido con credenciales de calificacion):
 ```bash
-cp .env.example .env
+cp env.example .env
 ```
  
 3. Levantar todos los servicios:
