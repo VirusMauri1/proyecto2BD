@@ -1,5 +1,5 @@
 ## Levantar el proyecto
- 
+
 ### Requisitos previos
  
 - Docker Desktop instalado y corriendo
@@ -7,10 +7,13 @@
 
 1. Clonar el repositorio:
 ```bash
-git clone <url-del-repositorio>
-cd <nombre-del-repositorio>
+git clone <https://github.com/VirusMauri1/proyecto2BD.git>
 ```
- 
+Ingresar a la ruta del proyecto y del folder correcto
+```bash
+cd <proyecto2BD>
+cd <Entrega>
+ ```
 2. Crear el archivo `.env` (ya incluido con credenciales de calificacion):
 ```bash
 cp .env.example .env
@@ -26,4 +29,4 @@ docker compose up --build
 http://localhost:8080
 ```
  
-El backend esta disponible en `http://localhost:3000`.
+El backend esta disponible en `http://localhost:3000/api/productos` o tambien en `http://localhost:3000/api/clientes`.
