@@ -1,0 +1,294 @@
+/* estilos generales */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f2f5;
+    color: #222;
+}
+
+/* pagina de login */
+
+#login-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #1a237e;
+}
+
+.login-box {
+    background: #fff;
+    border-radius: 10px;
+    padding: 40px 36px;
+    width: 340px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+.login-box h1 {
+    color: #1a237e;
+    margin-bottom: 24px;
+    font-size: 1.4rem;
+    text-align: center;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #c5cae9;
+    border-radius: 4px;
+    font-size: 1rem;
+    margin-bottom: 14px;
+}
+
+.login-box button {
+    width: 100%;
+    padding: 11px;
+    background: #3949ab;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.login-box button:hover {
+    background: #1a237e;
+}
+
+#login-error {
+    color: #c62828;
+    font-size: 0.88rem;
+    margin-top: 10px;
+    text-align: center;
+    min-height: 18px;
+}
+
+.usuarios-demo {
+    margin-top: 16px;
+    font-size: 0.78rem;
+    color: #888;
+    text-align: center;
+}
+
+/* pagina principal */
+
+#app-screen {
+    display: none;
+}
+
+header {
+    background: #1a237e;
+    color: #fff;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+header .title {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.user-info {
+    font-size: 0.88rem;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.rol-badge {
+    background: #fff2;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+#btn-logout {
+    background: #c62828;
+    color: #fff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* navegacion */
+
+nav {
+    background: #283593;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+nav button {
+    background: none;
+    border: none;
+    color: #c5cae9;
+    padding: 13px 22px;
+    cursor: pointer;
+    font-size: 0.92rem;
+}
+
+nav button:hover,
+nav button.active {
+    background: #1a237e;
+    color: #fff;
+}
+
+/* contenedor */
+
+.container {
+    max-width: 1100px;
+    margin: 28px auto;
+    padding: 0 16px;
+}
+
+.section {
+    display: none;
+}
+
+.section.active {
+    display: block;
+}
+
+.card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 22px;
+    margin-bottom: 22px;
+}
+
+h2 {
+    font-size: 1.15rem;
+    margin-bottom: 14px;
+    color: #1a237e;
+    border-bottom: 2px solid #e8eaf6;
+    padding-bottom: 8px;
+}
+
+/* formularios */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+label {
+    font-size: 0.82rem;
+    color: #555;
+    font-weight: 600;
+}
+
+input,
+select,
+textarea {
+    padding: 8px 10px;
+    border: 1px solid #c5cae9;
+    border-radius: 4px;
+    font-size: 0.93rem;
+    width: 100%;
+}
+
+/* botones */
+
+.btn {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+.btn-primary {
+    background: #3949ab;
+    color: #fff;
+}
+
+.btn-warning {
+    background: #f57f17;
+    color: #fff;
+}
+
+.btn-group {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+/* alertas */
+
+.alert {
+    padding: 11px 14px;
+    border-radius: 4px;
+    margin-bottom: 14px;
+    font-size: 0.88rem;
+    display: none;
+}
+
+/* tablas */
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead tr {
+    background: #e8eaf6;
+}
+
+th {
+    padding: 9px 11px;
+    text-align: left;
+}
+
+td {
+    padding: 8px 11px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+/* badges */
+
+.badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.badge-green {
+    background: #e8f5e9;
+    color: #1b5e20;
+}
+
+.badge-red {
+    background: #ffebee;
+    color: #b71c1c;
+}
