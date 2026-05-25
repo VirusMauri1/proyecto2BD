@@ -13,6 +13,7 @@ services:
       - ./db/view.sql:/docker-entrypoint-initdb.d/02_view.sql
       - ./pgadmin/inserts.sql:/docker-entrypoint-initdb.d/03_inserts.sql
       - ./db/roles_procedures.sql:/docker-entrypoint-initdb.d/04_roles.sql
+      - ./db/stored_procedures.sql:/docker-entrypoint-initdb.d/05_procedures.sql
     ports:
       - "5432:5432"
     healthcheck:
@@ -20,6 +21,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+
   backend:
     build: ./backend
     container_name: tienda_backend
