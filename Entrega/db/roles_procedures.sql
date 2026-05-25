@@ -40,7 +40,7 @@ GRANT INSERT, UPDATE ON producto TO rol_inventario;
 GRANT SELECT ON detalle_venta TO rol_inventario;
 GRANT USAGE, SELECT ON SEQUENCE producto_id_producto_seq TO rol_inventario;
 
- 
+
 -- aseguramos de no dar permisos peligrosos o de alto impacto a roles no idicados 
 REVOKE DELETE ON venta, detalle_venta FROM rol_cajero;
 REVOKE DELETE ON venta, detalle_venta FROM rol_vendedor;
@@ -50,22 +50,34 @@ REVOKE ALL ON empleado FROM rol_inventario;
 
 -- se tiene que generar un tipo de usuario para la app 
 
-CREATE TABLE app_usuario (
-	id_usuario  SERIAL,
-    username    VARCHAR(50) NOT NULL UNIQUE,
-    password    VARCHAR(255) NOT NULL,  -- bcrypt hash
-    rol         VARCHAR(20) NOT NULL CHECK (rol IN ('admin','gerente','vendedor','cajero','inventario')),
+CREATE TABLE IF NOT EXISTS app_usuario (
+    id_usuario  SERIAL,
+    username    VARCHAR(50)  NOT NULL UNIQUE,
+    password    VARCHAR(255) NOT NULL,
+    rol         VARCHAR(20)  NOT NULL CHECK (rol IN ('admin','gerente','vendedor','cajero','inventario')),
     activo      BOOLEAN DEFAULT TRUE,
     CONSTRAINT pk_app_usuario PRIMARY KEY (id_usuario)
 );
+
+-- Permisos sobre app_usuario para el usuario de la app
+GRANT SELECT ON app_usuario TO rol_admin;
+GRANT SELECT ON app_usuario TO rol_gerente;
+GRANT SELECT ON app_usuario TO rol_vendedor;
+GRANT SELECT ON app_usuario TO rol_cajero;
+GRANT SELECT ON app_usuario TO rol_inventario;
 
 
 -- algunos usuarios para probar contrase;a secret pero se usa un hash
 
 INSERT INTO app_usuario (username, password, rol) VALUES
-('admin1', 'secret', 'admin'),
-('gerente1', 'secret', 'gerente'),
-('vendedor1', 'secret', 'vendedor'),
-('cajero1',  'secret', 'cajero'),
-('inventario1', '$secret', 'inventario')
-ON CONFLICT (username) DO NOTHING;
+('admin1',      'secret', 'admin'),
+('gerente1',    'secret', 'gerente'),
+('vendedor1',   'secret', 'vendedor'),
+('cajero1',     'secret', 'cajero'),
+('inventario1', 'secret', 'inventario')   
+ON CONFLICT (username) DO UPDATE SET password = EXCLUDED.password;
+
+GRANT SELECT ON app_usuario TO proy3;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO proy3;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO proy3;
+GRANT INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO proy3;
