@@ -1,6 +1,5 @@
-const express = require('express');
-const router  = express.Router();
-const bcrypt  = require('bcrypt');
+const express    = require('express');
+const router     = express.Router();
 const { AppUsuario } = require('../orm/sequelize');
 
 router.post('/login', async (req, res) => {
@@ -16,8 +15,8 @@ router.post('/login', async (req, res) => {
         }
 
         if (password !== usuario.password) {
-    return res.status(401).json({ error: 'Credenciales inválidas' });
-}
+            return res.status(401).json({ error: 'Credenciales inválidas' });
+        }
 
         req.session.usuario = {
             id:       usuario.id_usuario,
