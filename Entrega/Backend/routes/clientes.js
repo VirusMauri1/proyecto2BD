@@ -1,98 +1,84 @@
 const express = require('express');
-const router = express.Router();
+const router  = express.Router();
+const { requireAuth, requireRol } = require('../middleware/auth');
+const { Cliente } = require('../orm/sequelize');
 const pool = require('../db');
 
-// GET all clientes
-router.get('/', async (req, res) => {
+const PUEDE_VER    = ['admin', 'gerente', 'vendedor', 'cajero'];
+const PUEDE_EDITAR = ['admin', 'gerente', 'vendedor', 'cajero'];
+const PUEDE_BORRAR = ['admin', 'gerente'];
+
+// GET all clientes  
+router.get('/', requireAuth, requireRol(...PUEDE_VER), async (req, res) => {
     try {
-    const result = await pool.query(
-      'SELECT * FROM cliente ORDER BY id_cliente'
-    );
-    res.json(result.rows);
+        const clientes = await Cliente.findAll({ order: [['id_cliente', 'ASC']] });
+        res.json(clientes);
     } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Error al obtener clientes' });
+        console.error(err);
+        res.status(500).json({ error: 'Error al obtener clientes' });
     }
 });
 
-// GET cliente by id
-router.get('/:id', async (req, res) => {
+// GET cliente by id 
+router.get('/:id', requireAuth, requireRol(...PUEDE_VER), async (req, res) => {
     try {
-    const { id } = req.params;
-    const result = await pool.query(
-      'SELECT * FROM cliente WHERE id_cliente = $1',
-        [id]
-    );
-    if (result.rows.length === 0) {
-        return res.status(404).json({ error: 'Cliente no encontrado' });
-    }
-    res.json(result.rows[0]);
+        const cliente = await Cliente.findByPk(req.params.id);
+        if (!cliente) return res.status(404).json({ error: 'Cliente no encontrado' });
+        res.json(cliente);
     } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Error al obtener cliente' });
+        console.error(err);
+        res.status(500).json({ error: 'Error al obtener cliente' });
     }
 });
 
-// POST crear cliente
-router.post('/', async (req, res) => {
+router.post('/', requireAuth, requireRol(...PUEDE_EDITAR), async (req, res) => {
     try {
-    const { nombre, telefono, email } = req.body;
-    if (!nombre || !telefono || !email) {
-        return res.status(400).json({ error: 'Todos los campos son requeridos' });
-    }
-    const result = await pool.query(
-        `INSERT INTO cliente (nombre, telefono, email)
-        VALUES ($1, $2, $3)
-       RETURNING *`,
-        [nombre, telefono, email]
-    );
-    res.status(201).json(result.rows[0]);
+        const { nombre, telefono, email } = req.body;
+        if (!nombre || !telefono || !email) {
+            return res.status(400).json({ error: 'Todos los campos son requeridos' });
+        }
+        const cliente = await Cliente.create({ nombre, telefono, email });
+        res.status(201).json(cliente);
     } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Error al crear cliente' });
+        console.error(err);
+        res.status(500).json({ error: 'Error al crear cliente' });
     }
 });
 
-// PUT actualizar cliente
-router.put('/:id', async (req, res) => {
+router.put('/:id', requireAuth, requireRol(...PUEDE_EDITAR), async (req, res) => {
     try {
-    const { id } = req.params;
-    const { nombre, telefono, email } = req.body;
-    if (!nombre || !telefono || !email) {
-        return res.status(400).json({ error: 'Todos los campos son requeridos' });
-    }
-    const result = await pool.query(
-        `UPDATE cliente
-        SET nombre = $1, telefono = $2, email = $3
-        WHERE id_cliente = $4
-       RETURNING *`,
-        [nombre, telefono, email, id]
-    );
-    if (result.rows.length === 0) {
-        return res.status(404).json({ error: 'Cliente no encontrado' });
-    }
-    res.json(result.rows[0]);
+        const { nombre, telefono, email } = req.body;
+        if (!nombre || !telefono || !email) {
+            return res.status(400).json({ error: 'Todos los campos son requeridos' });
+        }
+        const cliente = await Cliente.findByPk(req.params.id);
+        if (!cliente) return res.status(404).json({ error: 'Cliente no encontrado' });
+
+        await cliente.update({ nombre, telefono, email });
+        res.json(cliente);
     } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Error al actualizar cliente' });
+        console.error(err);
+        res.status(500).json({ error: 'Error al actualizar cliente' });
     }
 });
 
-// DELETE cliente
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', requireAuth, requireRol(...PUEDE_BORRAR), async (req, res) => {
+    const client = await pool.connect();
     try {
-    const { id } = req.params;
-    const result = await pool.query(
-      'DELETE FROM cliente WHERE id_cliente = $1 RETURNING *',
-        [id]
-    );
-    if (result.rows.length === 0) {
-        return res.status(404).json({ error: 'Cliente no encontrado' });
-    }
-    res.json({ message: 'Cliente eliminado', cliente: result.rows[0] });
+        await client.query('BEGIN');
+        const result = await client.query(
+            'CALL eliminar_cliente($1, $2)',
+            [req.params.id, false]
+        );
+
+        await client.query('COMMIT');
+        res.json({ message: 'Cliente eliminado correctamente' });
     } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Error al eliminar cliente' });
+        await client.query('ROLLBACK');
+        console.error(err);
+        res.status(400).json({ error: err.message || 'Error al eliminar cliente' });
+    } finally {
+        client.release();
     }
 });
 
